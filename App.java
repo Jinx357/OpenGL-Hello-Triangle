@@ -18,7 +18,8 @@ public class App {
 
 	
 	private long pWindow;
-	int pVao;
+	private int pVao;
+	private int pTime;
 
     public static void main(String[] args) {
         
@@ -114,16 +115,15 @@ public class App {
 		};
 		
 		
-		
+		pVao = glGenVertexArrays();
+		glBindVertexArray(pVao);
 		
 		
 		int pVbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER , pVbo);
-		glBufferData(GL_ARRAY_BUFFER , verticies , GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER , verticies , GL_DYNAMIC_DRAW);
 			
 		
-		pVao = glGenVertexArrays();
-		glBindVertexArray(pVao);
 		
 		glVertexAttribPointer(
 		
@@ -141,7 +141,7 @@ public class App {
 			
 			int cVbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER , cVbo);
-		glBufferData(GL_ARRAY_BUFFER , vertexColor , GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER , vertexColor , GL_DYNAMIC_DRAW);
 			
 			glVertexAttribPointer(
 			
@@ -173,6 +173,8 @@ public class App {
 		if(pWindow == NULL) throw new RuntimeException("window failed to create");
 		glfwMakeContextCurrent(pWindow);
 		GL.createCapabilities();
+		
+		glClearColor(0.0f , 0.0f , 0.0f , 1.0f);
 	}
 	
 	private void renderLoop(int pProgram) {
@@ -182,8 +184,16 @@ public class App {
 			
 			glClear(GL_COLOR_BUFFER_BIT);
 			glUseProgram(pProgram);
+			
+			
+			float time = glfwGetTime();
+			glUnifrom1f(pTime, time);
+			
+			
 			glBindVertexArray(pVao);
 			glDrawArrays(GL_TRIANGLES , 0 , 3);
+			glBindVertexArray(0);
+			
 			
 			glfwSwapBuffers(pWindow);
 		}
