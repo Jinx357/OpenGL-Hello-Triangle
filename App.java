@@ -11,6 +11,7 @@ import  org.lwjgl.opengl.GL;
 //import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL33.*;
+import org.lwjgl.BufferUtils;
 
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -19,7 +20,6 @@ public class App {
 	
 	private long pWindow;
 	private int pVao;
-	private int pTime;
 
     public static void main(String[] args) {
         
@@ -99,11 +99,12 @@ public class App {
 	
 	private void objects() {
 		
-		float[] verticies = {
+		float[] vertices = {
 		
-			0.0f , 0.5f,
-			0.0f , -0.5f,
-			0.5f , 0.0f
+			0.0f , 0.5f , //0 
+			0.0f , -0.5f, //1 
+			0.5f , 0.0f , //2
+		   -0.5f , 0.0f   //3
 		
 		};
 		
@@ -114,6 +115,20 @@ public class App {
 			0.0f , 0.0f , 1.0f 
 		};
 		
+		int[] indices = {
+			1 , 0 , 3 ,
+			1 , 2 , 0
+		};
+		
+		
+		var vertBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		vertBuffer.put(vertices).flip();
+		
+		var colBuffer = BufferUtils.createFloatBuffer(vertexColor.length);
+		colBuffer.put(vertexColor).flip();
+		
+		var indBuffer = BufferUtils.createIntBuffer(indices.length);
+		indBuffer.put(indices).flip();
 		
 		pVao = glGenVertexArrays();
 		glBindVertexArray(pVao);
@@ -121,7 +136,7 @@ public class App {
 		
 		int pVbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER , pVbo);
-		glBufferData(GL_ARRAY_BUFFER , verticies , GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER , vertBuffer , GL_DYNAMIC_DRAW);
 			
 		
 		
@@ -141,7 +156,7 @@ public class App {
 			
 			int cVbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER , cVbo);
-		glBufferData(GL_ARRAY_BUFFER , vertexColor , GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER , colBuffer , GL_DYNAMIC_DRAW);
 			
 			glVertexAttribPointer(
 			
@@ -155,6 +170,11 @@ public class App {
 			);
 		
 		glEnableVertexAttribArray(1);
+		
+		int ebo = glGenBuffers();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER , indBuffer , GL_DYNAMIC_DRAW);
+		
 		
 		glBindVertexArray(0);
 	}
@@ -186,12 +206,10 @@ public class App {
 			glUseProgram(pProgram);
 			
 			
-			float time = glfwGetTime();
-			glUnifrom1f(pTime, time);
 			
 			
 			glBindVertexArray(pVao);
-			glDrawArrays(GL_TRIANGLES , 0 , 3);
+			glDrawArrays(GL_TRIANGLES , 0 , 8);
 			glBindVertexArray(0);
 			
 			
