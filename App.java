@@ -112,7 +112,8 @@ public class App {
 			
 			1.0f , 0.0f , 0.0f , 
 			0.0f , 1.0f , 0.0f , 
-			0.0f , 0.0f , 1.0f 
+			0.0f , 0.0f , 1.0f ,
+			1.0f , 1.0f , 0.0f ,
 		};
 		
 		int[] indices = {
@@ -209,7 +210,7 @@ public class App {
 			
 			
 			glBindVertexArray(pVao);
-			glDrawArrays(GL_TRIANGLES , 0 , 8);
+			glDrawElements(GL_TRIANGLES , 6 , GL_UNSIGNED_INT , 0);
 			glBindVertexArray(0);
 			
 			
